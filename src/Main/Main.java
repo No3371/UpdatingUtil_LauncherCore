@@ -92,6 +92,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws IOException {
+		int verS = 0;
 		new Frameset();
 		init();
 		try {
@@ -102,18 +103,30 @@ public class Main {
 			e1.printStackTrace();
 		}
 		try {
-			versioncheck();
+			verS = versioncheck();			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		userSet();
+		if(verS == 1) userSet();
+		else if(verS == 2){
+			Frameset.Text_message.append("未知錯誤，即將關閉程式");
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}else if (verS == 0){
+			
+		}
 
 		return;
 	}
 
-	public static void versioncheck() throws IOException, InterruptedException {
+	public static int versioncheck() throws IOException, InterruptedException {
 		File lver = new File("Version");
 		if (lver.exists() == true) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -156,24 +169,23 @@ public class Main {
 				// Frameset.Btn_start.setEnabled(true);
 				Thread.sleep(1000);
 				Downloader.updatingQueue();
-				return;
+				return 1;
 			} else if (verCmp[0] == verCmp[1]) {
-				Frameset.Text_message.append("\n本地版本不需要進行更新，即將關閉本程式。");
+				Frameset.Text_message.append("\n本地版本不需要進行更新，即將自動啟動遊戲");
 				Thread.sleep(5000);
+				return 1;
 			} else if (verCmp[0] < verCmp[1]) {
 				Frameset.Text_message
 						.append("\n版本資訊錯誤，或者是線上版本已重設，請清空資料夾後重開更新程式。");
-				FileManager.delete("Version");
-				Thread.sleep(1000);
-				Downloader.fullupdate();
-				return;
+				return 0;
 			}
 		} else if (lver.exists() == false) {
 			Frameset.Text_message.append("\n未發現版本資訊，判定為遊戲未安裝，即將自動安裝。");
 			Thread.sleep(1000);
 			Downloader.fullupdate();
-			return;
+			return 1;
 		}
+		return 2;
 
 	}
 
@@ -187,7 +199,6 @@ public class Main {
 			Frameset.Text_message.setText("無法存取Dropbox伺服器。");
 			Frameset.Text_message.append("\n請確認網路連線，程式即將自動關閉。");
 			Thread.sleep(5000);
-
 			return 0;
 
 		} else if (reachable == true) {
