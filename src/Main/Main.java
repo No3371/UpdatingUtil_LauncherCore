@@ -91,7 +91,7 @@ public class Main {
 
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		int verS = 0;
 		new Frameset();
 		init();
@@ -109,18 +109,15 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		if(verS == 1) userSet();
-		else if(verS == 2){
-			Frameset.Text_message.append("未知錯誤，即將關閉程式");
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(verS == 1){
+			userSet();
+			Thread.sleep(1500);
 			System.exit(1);
-		}else if (verS == 0){
-			
+		}else if(verS == 2){
+			Frameset.Text_message.append("未知錯誤，即將關閉程式");
+			Thread.sleep(5000);
+			System.exit(1);
+		}else if (verS == 0){			
 		}
 
 		return;
