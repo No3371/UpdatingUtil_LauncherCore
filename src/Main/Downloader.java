@@ -40,7 +40,7 @@ public class Downloader {
 
 	public static void updatingQueue() throws IOException{
 		
-		int[] Ver = null, Date = null, No = null;
+		int[] Ver = {0, 0}, Date = {0, 0}, No = {0, 0};
 		Ver[0] = Integer.parseInt(Main.patchNoS.substring(0, 3));
 		Date[0] = Integer.parseInt(Main.patchNoS.substring(3, 9));
 		No[0] = Integer.parseInt(Main.patchNoS.substring(9, 12));
@@ -130,6 +130,36 @@ public class Downloader {
 		
 	}
 
+	public static void download(String fn, URL url, int msg) throws IOException{
+		if(fn.contains("\\")){
+			new File(fn).getParentFile().mkdirs();
+		}
+		//
+		if(msg != 0) Frameset.Text_message.append("\n¤U¸ü" + fn + "...");
+		InputStream in;
+		try {
+			in = new BufferedInputStream(url.openStream());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		byte[] buf = new byte[4096];
+		int n = 0;
+		while((n = in.read(buf)) != -1){
+			out.write(buf, 0, n);
+		}
+			out.close();
+		in.close();
+		byte[] response = out.toByteArray();
+
+		FileOutputStream fos;
+			fos = new FileOutputStream(fn);
+		fos.write(response);
+		fos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//
+	}
+	
 	public static void download(String fn, URL url) throws IOException{
 		if(fn.contains("\\")){
 			new File(fn).getParentFile().mkdirs();

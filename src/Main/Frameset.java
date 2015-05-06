@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -12,6 +13,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
+
+class loader{
+	
+}
 
 public class Frameset{
 	static JTextArea Text_message;
@@ -66,13 +71,19 @@ public class Frameset{
 	GBC_Cbox_renew.anchor = GridBagConstraints.EAST;
 	mainFrame.add(Cbox_renew, GBC_Cbox_renew);
 	*/
-	JLabel L_Name = new JLabel("通用更新程式");
+	
+
+	loader l = new loader();
+    ImageIcon loading = new ImageIcon(l.getClass().getResource("Res/ajax-loader.gif"));
+	
+	JLabel L_Name = new JLabel("通用更新程式", loading, JLabel.CENTER);
 	GridBagConstraints GBC_L_Name = new GridBagConstraints();
 	GBC_L_Name.gridx = 0; GBC_L_Name.gridy = 0;
 	GBC_L_Name.gridwidth = 6; GBC_L_Name.gridheight = 1;
 	GBC_L_Name.fill = GridBagConstraints.BOTH;
 	GBC_L_Name.anchor = GridBagConstraints.CENTER;
 	mainFrame.add(L_Name, GBC_L_Name);
+	
 	
 	Pbar = new JProgressBar();
 	Pbar.setStringPainted(true);
