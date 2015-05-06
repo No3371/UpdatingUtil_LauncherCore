@@ -41,10 +41,9 @@ public class Downloader {
 	public static void updatingQueue() throws IOException{
 		
 		int[] Ver = {0, 0}, Date = {0, 0}, No = {0, 0};
-		Ver[0] = Integer.parseInt(Main.patchNoS.substring(0, 3));
-		Date[0] = Integer.parseInt(Main.patchNoS.substring(3, 9));
-		No[0] = Integer.parseInt(Main.patchNoS.substring(9, 12));
-
+		Ver[0] = Integer.parseInt(Main.MVersion + Main.SVersion);
+		Date[0] = Integer.parseInt(Main.patchNoS.substring(0, 6));
+		No[0] = Integer.parseInt(Main.patchNoS.substring(6, 9));
 		Scanner scanner;
 		
 		String str;
