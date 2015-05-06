@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 public class Main {
 	static float[] verCmp = { 0, 0 };
 	static String patchNoS;
+	static String MVersion, SVersion;
 	static String VariablesURL = "https://dl.dropboxusercontent.com/u/132679455/OnlineServer/Variables.txt";
 
 	public static String getVariables(String wanted) throws IOException {
@@ -137,7 +138,8 @@ public class Main {
 			}
 
 			String Vstr = tstr[0];
-			String MVersion = tstr[1], SVersion = tstr[2];
+			MVersion = tstr[1];
+			SVersion = tstr[2];
 			Frameset.Text_message.append("\n更新代號：" + Vstr + "\n線上版本："
 					+ MVersion + "." + SVersion);
 			verCmp[0] = Float.parseFloat((MVersion + SVersion));
