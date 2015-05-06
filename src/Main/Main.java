@@ -6,59 +6,97 @@ package Main;
 
 import java.io.*;
 import java.net.*;
-import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-public class Main{
+public class Main {
 	static float[] verCmp = { 0, 0 };
 	static String patchNoS;
+	static String VariablesURL = "https://dl.dropboxusercontent.com/u/132679455/OnlineServer/Variables.txt";
 
-	private static void init() throws MalformedURLException {
-		Downloader.versionUrl = new URL(
-				"https://dl.dropboxusercontent.com/u/132679455/Client/Version");
-		Downloader.verFN = "Version";
-		Downloader.FileListUrl = new URL(
-				"https://dl.dropboxusercontent.com/u/132679455/Client/FileList");
-		Downloader.PatchLogUrl = new URL(
-				"https://dl.dropboxusercontent.com/u/132679455/Client/patchlog.txt");
-		Downloader.dropboxUrlStr = "https://dl.dropboxusercontent.com/u/132679455/Client";
+	public static String getVariables(String wanted) throws IOException {
+		if (!new File("Variables").exists()) {
+			URL url = new URL(VariablesURL);
+			Downloader.download("Variables", url, 0);
+			new File("Variables").deleteOnExit();
+		}
+		FileReader fr = new FileReader("Variables");
+		BufferedReader bf = new BufferedReader(fr);
+		String str, Name, Value = "";
+
+		while ((str = bf.readLine()) != null) {
+			int[] index = { str.indexOf("\"") + 1, 0 };
+			index[1] = str.indexOf("\"", index[0] + 1);
+			Name = str.substring(index[0], index[1]);
+
+			if (!Name.equals(wanted)) {
+				continue;
+			}
+
+			index[0] = str.indexOf("\"", index[1] + 1) + 1;
+			index[1] = str.indexOf("\"", index[0] + 1);
+			Value = str.substring(index[0], index[1]);
+			fr.close();
+			bf.close();
+			return Value;
+
+		}
+		fr.close();
+		bf.close();
+		return Value;
 
 	}
-	
-	public static void userSet() throws IOException{		
-		
-		if(new File("Launch.vbe").exists())	return;
-		
+
+	private static void init() throws IOException {
+		Downloader.versionUrl = new URL(getVariables("MCVersionURL"));
+		Downloader.verFN = "Version";
+		Downloader.FileListUrl = new URL(getVariables("MCFilelistURL"));
+		Downloader.PatchLogUrl = new URL(getVariables("MCPatchLogURL"));
+		Downloader.dropboxUrlStr = getVariables("MCDropboxDirURL");
+
+	}
+
+	public static void userSet() throws IOException {
+
+		if (!new File("Launch.vbe").exists()){
+
 		String Pname = JOptionPane.showInputDialog("請輸入你的角色名稱：", "英文或數字");
-		
+
 		int Ram;
-		switch(System.getProperty("sun.arch.data.model")){
+		switch (System.getProperty("sun.arch.data.model")) {
 		case "32":
-			Ram = 1024;	break;
+			Ram = 1024;
+			break;
 		case "64":
-			Ram = 2048; break;
+			Ram = 2048;
+			break;
 		default:
-			Ram = 1024; break;
+			Ram = 1024;
+			break;
 		}
-		
-		if(Pname != null && Pname.length() > 0){
-			 while(!Pname.matches("\\w+")){
-					Pname = JOptionPane.showInputDialog("請輸入你的角色名稱：", "英文或數字");
-			 }
-		FileWriter fw = new FileWriter("Launch.vbe");
-		fw.write(String.format("set a=wscript.createobject(\"wscript.shell\")\na.run(\"MCLauncherBN.exe 1.7.10-Forge10.13.2.1307-1.7.10*%s*%d*-Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true\")", Pname, Ram));
-		fw.close();
+
+		if (Pname != null && Pname.length() > 0) {
+			while (!Pname.matches("\\w+")) {
+				Pname = JOptionPane.showInputDialog("請輸入你的角色名稱：", "英文或數字");
+			}
+			FileWriter fw = new FileWriter("Launch.vbe");
+			fw.write(String
+					.format("set a=wscript.createobject(\"wscript.shell\")\na.run(\"MCLauncherBN.exe 1.7.10-Forge10.13.2.1307-1.7.10*%s*%d*-Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true\")",
+							Pname, Ram));
+			fw.close();
+		}
+		}
+
 		Runtime.getRuntime().exec("wscript.exe Launch.vbe");
-		}
-		
+
 	}
 
 	public static void main(String[] args) throws IOException {
-		init();
 		new Frameset();
+		init();
 		try {
-			if(checkconnection() == 0) System.exit(1);
+			if (checkconnection() == 0)
+				System.exit(1);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -69,9 +107,9 @@ public class Main{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		userSet();
-		
+
 		return;
 	}
 
@@ -123,7 +161,8 @@ public class Main{
 				Frameset.Text_message.append("\n本地版本不需要進行更新，即將關閉本程式。");
 				Thread.sleep(5000);
 			} else if (verCmp[0] < verCmp[1]) {
-				Frameset.Text_message.append("\n版本資訊錯誤，或者是線上版本已重設，請清空資料夾後重開更新程式。");
+				Frameset.Text_message
+						.append("\n版本資訊錯誤，或者是線上版本已重設，請清空資料夾後重開更新程式。");
 				FileManager.delete("Version");
 				Thread.sleep(1000);
 				Downloader.fullupdate();
