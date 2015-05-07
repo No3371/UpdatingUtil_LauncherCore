@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 public class Main {
 	static float[] verCmp = { 0, 0 };
 	static String patchNoS;
-	static String MVersion, SVersion;
+	static String Vstr, MVersion, SVersion;
 	static String VariablesURL = "https://dl.dropboxusercontent.com/u/132679455/OnlineServer/Variables.txt";
 
 	public static String getVariables(String wanted) throws IOException {
@@ -35,7 +35,7 @@ public class Main {
 			}
 
 			index[0] = str.indexOf("\"", index[1] + 1) + 1;
-			index[1] = str.indexOf("\"", index[0] + 1);
+			index[1] = str.indexOf("\"", index[0]);
 			Value = str.substring(index[0], index[1]);
 			fr.close();
 			bf.close();
@@ -54,6 +54,7 @@ public class Main {
 		Downloader.FileListUrl = new URL(getVariables("MCFilelistURL"));
 		Downloader.PatchLogUrl = new URL(getVariables("MCPatchLogURL"));
 		Downloader.dropboxUrlStr = getVariables("MCDropboxDirURL");
+		Frameset.Text_message.append("超連結初始化");
 
 	}
 
@@ -137,7 +138,7 @@ public class Main {
 				tstr = str.split("\\s");
 			}
 
-			String Vstr = tstr[0];
+			Vstr = tstr[0];
 			MVersion = tstr[1];
 			SVersion = tstr[2];
 			Frameset.Text_message.append("\n更新代號：" + Vstr + "\n線上版本："

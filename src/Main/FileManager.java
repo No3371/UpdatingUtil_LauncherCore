@@ -64,7 +64,16 @@ public class FileManager {
 */
 	public static void delete(String dfile) {
 		File d = new File(dfile);
-		if(d.exists()) d.delete();
+		if(d.exists()){
+			Frameset.Text_message.append("\n§R°£ " + dfile);
+			d.delete();
+		}
+	}
+	
+	public static void resetter(String main, String sub, String no) throws IOException{
+		FileWriter fw = new FileWriter("Version");
+		fw.write(String.format("%s %s.%s.%s", Main.Vstr, main, sub, no));
+		fw.close();
 	}
 	
 	public static void log(String str){

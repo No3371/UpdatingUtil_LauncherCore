@@ -35,8 +35,13 @@ public class Downloader {
 	static URL PatchLogUrl;
 	static String CurrentDLFN;
 	static String verFN;
+	static int debugmode = 0;
 	
 	static ArrayList<String> queue = new ArrayList<String>();
+	
+	public static void debug(String strrr){
+		if(debugmode == 1) Frameset.Text_message.append("\n" + strrr);
+	}
 
 	public static void updatingQueue() throws IOException{
 		
@@ -45,12 +50,14 @@ public class Downloader {
 		Date[0] = Integer.parseInt(Main.patchNoS.substring(0, 6));
 		No[0] = Integer.parseInt(Main.patchNoS.substring(6, 9));
 		Scanner scanner;
+		debug("" + Ver[0] + Date[0] + No[0]);
 		
 		String str;
 		BufferedReader FLO = new BufferedReader(new InputStreamReader(PatchLogUrl.openStream()));
 		while((str = FLO.readLine()) != null){
 			if(str.startsWith("No.")) str = str.substring(3);
 			scanner = new Scanner(str);
+			debug("read: " + str);
 			
 			String PatchNo = scanner.next();
 			Ver[1] = Integer.parseInt(PatchNo.substring(0, 3));
@@ -68,8 +75,19 @@ public class Downloader {
 			String Type = scanner.next();
 			scanner.useDelimiter("\\z");
 			String FN = scanner.next();
-			if(Type == "檔案刪除：" || Type == "檔案更新：") FileManager.delete(FN); 
-			if(Type == "檔案更新：" || Type == "檔案新增：") queue.add(FN); 	
+			while(FN.startsWith(" ")){
+				System.out.println("Space catched.");
+				FN = FN.substring(1);
+			}
+			System.out.println(FN);
+			if(Type.contains("檔案刪除：") || Type.contains("檔案更新：")){
+				FileManager.delete(FN);
+				debug("Delete: " + FN);
+			}
+			if(Type.contains("檔案更新：") || Type.contains("檔案新增：")){
+				queue.add(FN);
+				debug("Queue: " + FN);
+			}
 			scanner.close();
 			
 		}
@@ -117,10 +135,11 @@ public class Downloader {
 		return;
 	}
 
-	public static String urlEncoder(String in){
+	public static String urlEncoder(String in){		
 		try {
 			in = URLEncoder.encode(in, "UTF-8").replace("+", "%20");
 			in = in.replace("%5C", "/");
+			in = in.replace("%2F", "/");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
